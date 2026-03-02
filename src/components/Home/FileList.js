@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { tokens } from "../../styles/tokens";
-import FileTypeBadge from "../Common/FileTypeBadge";
 
 function colorForType(type) {
   if (type === "pdf") return tokens.coral;
@@ -51,7 +50,7 @@ export default function FileList({ docs, onOpen, onEdit }) {
               {d.filename}
             </Text>
             <Text style={{ marginTop: 3, fontWeight: "700", color: tokens.muted, fontSize: 11 }}>
-             {(d.fileType || "").toUpperCase()} {" · "} {((d.fileSize || 0) / 1024).toFixed(0)} KB
+              {(d.fileType || "").toUpperCase()} - {((d.fileSize || 0) / 1024).toFixed(0)} KB
             </Text>
           </View>
 
