@@ -7,7 +7,7 @@ export async function applyPdfTextEdits(localUri, docId, blocksFlat) {
     encoding: FileSystem.EncodingType.Base64,
   });
 
-  // ✅ No Buffer — use atob directly
+  // No Buffer — use atob directly
   const pdfBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -47,7 +47,7 @@ export async function applyPdfTextEdits(localUri, docId, blocksFlat) {
     });
   });
 
-  // ✅ No Buffer — convert Uint8Array to base64 manually
+  // No Buffer — convert Uint8Array to base64 manually
   const out = await pdfDoc.save();
   let binary = "";
   out.forEach((byte) => { binary += String.fromCharCode(byte); });

@@ -51,7 +51,7 @@ export default function FileList({ docs, onOpen, onEdit }) {
               {d.filename}
             </Text>
             <Text style={{ marginTop: 3, fontWeight: "700", color: tokens.muted, fontSize: 11 }}>
-              {(d.fileType || "").toUpperCase()} · {((d.fileSize || 0) / 1024).toFixed(0)} KB
+             {(d.fileType || "").toUpperCase()} {" · "} {((d.fileSize || 0) / 1024).toFixed(0)} KB
             </Text>
           </View>
 
