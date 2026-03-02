@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"; // ✅ updated import
 import PhoneShell from "./src/components/Shell/PhoneShell";
 import BottomNav from "./src/components/Shell/BottomNav";
 import HomeScreen from "./src/components/Home/HomeScreen";
@@ -19,17 +20,19 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: tokens.bg }}>
-      <StatusBar style="dark" />
-      <PhoneShell>
-        <View style={{ flex: 1 }}>
-          {activeTab === "home" && <HomeScreen />}
-          {activeTab === "view" && <ViewerScreen />}
-          {activeTab === "merge" && <MergeScreen />}
-          {activeTab === "scan" && <ScannerScreen />}
-        </View>
-        <BottomNav />
-      </PhoneShell>
-    </SafeAreaView>
+    <SafeAreaProvider> {/* ✅ wraps everything at the top */}
+      <SafeAreaView style={{ flex: 1, backgroundColor: tokens.bg }}>
+        <StatusBar style="dark" />
+        <PhoneShell>
+          <View style={{ flex: 1 }}>
+            {activeTab === "home" && <HomeScreen />}
+            {activeTab === "view" && <ViewerScreen />}
+            {activeTab === "merge" && <MergeScreen />}
+            {activeTab === "scan" && <ScannerScreen />}
+          </View>
+          <BottomNav />
+        </PhoneShell>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

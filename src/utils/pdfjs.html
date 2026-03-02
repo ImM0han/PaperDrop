@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html, body { margin: 0; padding: 0; background: #E8E4DC; }
+      #wrap { padding: 12px; }
+      .page { background: white; border-radius: 12px; margin: 0 auto 12px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.12); overflow: hidden; }
+      canvas { display: block; width: 100%; height: auto; }
+    </style>
+  </head>
+  <body>
+    <div id="wrap"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      const wrap = document.getElementById('wrap');
+
+      function post(type, payload) {
+        window.ReactNativeWebView?.postMessage(JSON.stringify({ type, payload }));
+      }
+
+      async function renderPdf(uri) {
+        wrap.innerHTML = "";
+        const loadingTask = pdfjsLib.getDocument(uri);
+        const pdf = await loadingTask.promise;
+        post("pageCount", { pageCount: pdf.numPages });
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1.2 });
+
+          const pageDiv = document.createElement("div");
+          pageDiv.className = "page";
+
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          pageDiv.appendChild(canvas);
+          wrap.appendChild(pageDiv);
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          // report page size (for coordinate mapping)
+          post("pageSize", { pageNumber: i, width: viewport.width, height: viewport.height });
+        }
+      }
+
+      document.addEventListener("message", (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.type === "load" && msg.uri) renderPdf(msg.uri);
+        } catch {}
+      });
+
+      // also support webview inject
+      window.loadPdf = renderPdf;
+    </script>
+  </body>
+</html>
